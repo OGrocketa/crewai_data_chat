@@ -13,8 +13,12 @@ export const ChatInput = () => {
         }
     }, []);
 
+    const handleFileButtonClick = () => {
+        fileInputRef.current.click();
+    };
+
     return (
-        <div className="bg-[#303030]  border-gray-700 p-4 sticky bottom-0 rounded-2xl flex items-center">
+        <div className="bg-[#303030]  border-gray-700 p-4 mb-2 sticky bottom-0 rounded-2xl flex items-center">
             <div className="flex-grow">
                 <TextareaAutosize
                     ref={textareaRef}
@@ -35,8 +39,8 @@ export const ChatInput = () => {
 
             <div className="ml-2">
                 <button
+                    onClick={handleFileButtonClick}
                     className="h-10 bg-[#40444b7a] hover:bg-[#40444b] text-white px-4 rounded-md transition-colors"
-                    aria-label="Upload file"
                 >
                     <FileIcon className="h-5 w-5" />
                 </button>
