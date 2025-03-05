@@ -1,14 +1,14 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { ChatScreeen } from './components/ChatScreeen'
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  
   return (
     <>
-      <p className='text-red-500'>Text red</p>
+    <div className='w-full h-screen '>
+      <ChatScreeen/>
+    </div>
+     
     </>
   )
 }
