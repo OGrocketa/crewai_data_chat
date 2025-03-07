@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import Chat from '../components/Chat'   
 import SideBar from '../components/SideBar'
 import { GoSidebarCollapse } from "react-icons/go";
+import { RiChatNewLine } from "react-icons/ri";
+
 
 const MainChatPage = () => {
   const [sideBarVisible, setSidebarVisible] = useState(true)
@@ -22,7 +24,10 @@ const MainChatPage = () => {
           {!sideBarVisible &&(
             <div className='absolute text-white top-0 left-0 px-3 py-3'>
               <button onClick={toggleSidebar}>
-                <GoSidebarCollapse className='size-7' />
+                <GoSidebarCollapse className='size-7 hover:text-gray-300 cursor-pointer' onClick={toggleSidebar}/>
+              </button>
+              <button>
+                <RiChatNewLine className='size-7 mx-5 hover:text-gray-300 cursor-pointer' />
               </button>
               
             </div>
