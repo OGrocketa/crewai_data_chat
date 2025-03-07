@@ -1,14 +1,15 @@
 import './App.css'
-import { Chat } from './components/Chat'
+
 import {Routes, Route } from "react-router-dom";
 import Layout from './LAyout';
+import MainChatPage from './pages/MainChatPage';
 function App() {
   
   return (
     <>
     <Routes>
       <Route path="/" element={<Layout/>}>
-        <Route path="/" element={<Chat/>}/>
+        <Route path="/" element={<MainChatPage/>}/>
       </Route>
     </Routes>
      
