@@ -1,11 +1,12 @@
-import React, {useRef, useEffect} from 'react'
+import React, {useRef, useEffect, useState} from 'react'
 import { ArrowRightIcon,FileIcon } from "@radix-ui/react-icons"
 import TextareaAutosize from 'react-textarea-autosize';
-
+import { ErrorNotification } from '../notifications/ErrorNotification'; 
 
 export const ChatInput = () => {
     const fileInputRef = useRef(null);
     const textareaRef = useRef(null);
+    const [filesUploaded, setFilesUploaded] = useState([]);
 
     useEffect(() => {
         if (textareaRef.current) {
@@ -15,6 +16,12 @@ export const ChatInput = () => {
 
     const handleFileButtonClick = () => {
         fileInputRef.current.click();
+    };
+
+    const HandleMessageSent = () =>{
+        if(filesUploaded.length == 0){
+            ErrorNotification("You need to upload a file")
+        }
     };
 
     return (
@@ -50,6 +57,7 @@ export const ChatInput = () => {
             <button
                 className="h-10 bg-green-400 hover:bg-green-600 text-white px-4 rounded-md transition-colors"
                 type="button"
+                onClick={HandleMessageSent}
             >
                 <ArrowRightIcon/>
             </button>

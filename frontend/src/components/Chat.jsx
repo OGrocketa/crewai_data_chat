@@ -4,7 +4,6 @@ import { ChatInput } from './ChatInput';
 import { messages } from '../messages';
 
 export const Chat = () => {
-
     const messagesEndRef = useRef(null);
     useEffect(() => {
         scrollToBottom();
@@ -13,6 +12,7 @@ export const Chat = () => {
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       };
+
     return (
         <div className="bg-[#212121] min-h-screen w-full">
         <div className="max-w-3xl mx-auto px-4 pt-4 pb-24">
