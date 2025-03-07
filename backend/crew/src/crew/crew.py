@@ -1,62 +1,65 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
+from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
+from crewai.memory import LongTermMemory
+from crewai.memory.storage.ltm_sqlite_storage import LTMSQLiteStorage
+from dotenv import load_dotenv
 
-# If you want to run a snippet of code before or after the crew starts, 
-# you can use the @before_kickoff and @after_kickoff decorators
-# https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
+load_dotenv()
 
 @CrewBase
-class Crew():
-	"""Crew crew"""
+class Testcrew:
+	"""Testcrew crew"""
 
-	# Learn more about YAML configuration files here:
-	# Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
-	# Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
+	pdf_source = PDFKnowledgeSource(
+   	 	file_paths=["test.pdf"]
+	)
+
+
 	agents_config = 'config/agents.yaml'
 	tasks_config = 'config/tasks.yaml'
 
-	# If you would like to add tools to your agents, you can learn more about it here:
-	# https://docs.crewai.com/concepts/agents#agent-tools
 	@agent
-	def researcher(self) -> Agent:
+	def data_extractor(self) -> Agent:
 		return Agent(
-			config=self.agents_config['researcher'],
-			verbose=True
+			config=self.agents_config['data_extractor'],
+			max_iter = 5,
+			knowledge_sources = [self.pdf_source]
 		)
 
 	@agent
-	def reporting_analyst(self) -> Agent:
+	def data_summarizer(self) -> Agent:
 		return Agent(
-			config=self.agents_config['reporting_analyst'],
-			verbose=True
+			config=self.agents_config['data_summarizer'],
 		)
-
-	# To learn more about structured task outputs, 
-	# task dependencies, and task callbacks, check out the documentation:
-	# https://docs.crewai.com/concepts/tasks#overview-of-a-task
+	
 	@task
 	def research_task(self) -> Task:
 		return Task(
-			config=self.tasks_config['research_task'],
+			config=self.tasks_config['retrieve_data'],
 		)
 
 	@task
 	def reporting_task(self) -> Task:
 		return Task(
-			config=self.tasks_config['reporting_task'],
-			output_file='report.md'
+			config=self.tasks_config['summarize_data'],
 		)
-
+	
 	@crew
 	def crew(self) -> Crew:
-		"""Creates the Crew crew"""
-		# To learn how to add knowledge sources to your crew, check out the documentation:
-		# https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+		"""Creates the Testcrew crew"""
 
 		return Crew(
-			agents=self.agents, # Automatically created by the @agent decorator
-			tasks=self.tasks, # Automatically created by the @task decorator
+			agents=self.agents,
+			tasks=self.tasks,
 			process=Process.sequential,
 			verbose=True,
-			# process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
+			memory=True,
+			long_term_memory = LongTermMemory(
+				storage=LTMSQLiteStorage(
+						db_path="./db/long_term_memory_storage.db"
+					)
+			),
+
+
 		)

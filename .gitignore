@@ -1,3 +1,8 @@
+.env
+__pycache__/
+.DS_Store
+.venv
+
 # Logs
 logs
 *.log
@@ -11,6 +16,8 @@ node_modules
 dist
 dist-ssr
 *.local
+poetry.lock
+db
 
 # Editor directories and files
 .vscode/*
