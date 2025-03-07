@@ -1,13 +1,16 @@
 import './App.css'
-import { ChatScreeen } from './components/ChatScreeen'
-
+import { Chat } from './components/Chat'
+import {Routes, Route } from "react-router-dom";
+import Layout from './LAyout';
 function App() {
   
   return (
     <>
-    <div className='w-full h-screen '>
-      <ChatScreeen/>
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout/>}>
+        <Route path="/" element={<Chat/>}/>
+      </Route>
+    </Routes>
      
     </>
   )

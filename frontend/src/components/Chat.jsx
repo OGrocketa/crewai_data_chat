@@ -2,7 +2,8 @@ import React, { useRef, useEffect } from 'react'
 import { Message } from './Message'
 import { ChatInput } from './ChatInput';
 import { messages } from '../messages';
-export const ChatScreeen = () => {
+
+export const Chat = () => {
 
     const messagesEndRef = useRef(null);
     useEffect(() => {
