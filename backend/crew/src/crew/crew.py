@@ -3,19 +3,17 @@ from crewai.project import CrewBase, agent, crew, task
 from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
 from crewai.memory import LongTermMemory
 from crewai.memory.storage.ltm_sqlite_storage import LTMSQLiteStorage
+from UploadFilesKnowledgeSource.UploadFilesKnowledgeSource import UploadFilesKnowledgeSource
+from crewai_tools import PDFSearchTool
 from dotenv import load_dotenv
 
 load_dotenv()
 
 @CrewBase
-class Testcrew:
+class Testcrew():
 	"""Testcrew crew"""
 
-	pdf_source = PDFKnowledgeSource(
-   	 	file_paths=["test.pdf"]
-	)
-
-
+	pdf_source = UploadFilesKnowledgeSource()
 	agents_config = 'config/agents.yaml'
 	tasks_config = 'config/tasks.yaml'
 
@@ -54,12 +52,18 @@ class Testcrew:
 			tasks=self.tasks,
 			process=Process.sequential,
 			verbose=True,
-			memory=True,
-			long_term_memory = LongTermMemory(
-				storage=LTMSQLiteStorage(
-						db_path="./db/long_term_memory_storage.db"
-					)
-			),
+			memory=False,
+			knowledge_sources = [self.pdf_source],
+			# long_term_memory = LongTermMemory(
+			# 	storage=LTMSQLiteStorage(
+			# 			db_path="./db/long_term_memory_storage.db"
+			# 		)
+			# ),
 
 
 		)
+
+
+result = Testcrew().crew().kickoff(inputs={'input':'What is RAW?'})
+
+print(result)

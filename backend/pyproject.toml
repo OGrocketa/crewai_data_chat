@@ -16,6 +16,7 @@ dependencies = [
     "langchain-experimental (>=0.3.4,<0.4.0)",
     "langchain-community (>=0.3.19,<0.4.0)",
     "pypdf (>=5.3.1,<6.0.0)",
+    "langchain-huggingface (>=0.1.2,<0.2.0)",
 ]
 
 [project.scripts]
