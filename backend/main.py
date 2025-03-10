@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends,HTTPException, UploadFile
+from fastapi import FastAPI, Depends,HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from crew.src.crew.crew import Testcrew
 import uvicorn, os
@@ -26,19 +26,23 @@ async def respond_to_message(message: str, crew = Depends(load_crew)):
 
 
 @app.post("/upload_file")
-async def upload_files_create_chromadb(file: UploadFile):
+async def upload_files_create_chromadb(files: list[UploadFile]=File(...)):
     UPLOAD_DIR = "./knowledge"
     os.makedirs(UPLOAD_DIR, exist_ok=True)
-    knowledge_dir = os.path.join(UPLOAD_DIR, file.filename)
+    
+    filenames = []
+    for file in files:
+        try:
+            knowledge_dir = os.path.join(UPLOAD_DIR, file.filename)
+            contents = await file.read()
+            with open(knowledge_dir, 'wb') as f :
+                f.write(contents)
+            filenames.append(file.filename)
 
-    try:
-        content = await file.read()
-        with open(knowledge_dir, 'wb') as f :
-            f.write(content)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail="File upload failed")
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="File upload failed")
-        
-    finally:
-        file.file.close()
-        return {"filename": file.filename}
+        finally:
+            await file.close()
+
+    return {"uploaded_files": filenames}
