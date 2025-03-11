@@ -25,6 +25,7 @@ class UploadFilesKnowledgeSource(BaseKnowledgeSource):
             raise ValueError(f"Directory '{self.pdfs_directory}' does not exist or is not a directory.")
 
         pdfs_paths = [os.path.join(self.pdfs_directory, f) for f in os.listdir(self.pdfs_directory) if f.lower().endswith(".pdf")]
+
         if not pdfs_paths:
             raise ValueError("No PDF files found in the directory")
         return pdfs_paths
@@ -59,7 +60,6 @@ class UploadFilesKnowledgeSource(BaseKnowledgeSource):
         
         for chunk in pdf_chunks:
             self.chunks.append(chunk.page_content)
-        print(self.chunks)
+            
         self._save_documents()
-
 
