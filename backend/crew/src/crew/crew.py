@@ -5,26 +5,34 @@ from crewai.memory import LongTermMemory
 from crewai.memory.storage.ltm_sqlite_storage import LTMSQLiteStorage
 from UploadFilesKnowledgeSource.UploadFilesKnowledgeSource import UploadFilesKnowledgeSource
 from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
+from crewai_tools import RagTool
+
 from dotenv import load_dotenv
 import os
 
 
 load_dotenv()
 
+pdf_paths = [os.path.join("/Users/yaraslausedach/Code/crewai_data_chat/backend/knowledge",f ) for f in os.listdir("/Users/yaraslausedach/Code/crewai_data_chat/backend/knowledge")]
+print(pdf_paths)
+rag_tool = RagTool()
+rag_tool.add(source='/Users/yaraslausedach/Code/crewai_data_chat/backend/knowledge/ca7-pipe.pdf')
+rag_tool.add(source='/Users/yaraslausedach/Code/crewai_data_chat/backend/knowledge/ca2-data.pdf' )
 @CrewBase
 class Testcrew():
 	"""Testcrew crew"""
 
 	agents_config = 'config/agents.yaml'
 	tasks_config = 'config/tasks.yaml'
-	pdf_knowledge = UploadFilesKnowledgeSource()
 
 	@agent
 	def data_extractor(self) -> Agent:
 		return Agent(
 			config=self.agents_config['data_extractor'],
 			max_iter = 5,
-			knowledge_sources = [self.pdf_knowledge]
+			# knowledge_sources = [self.pdf_knowledge]
+			tools=[rag_tool]
+
 		)
 
 	@agent
@@ -55,7 +63,7 @@ class Testcrew():
 			process=Process.sequential,
 			verbose=True,
 			memory=False,
-			knowledge_sources = [self.pdf_knowledge],
+			# knowledge_sources = [self.pdf_knowledge],
 			long_term_memory = LongTermMemory(
 				storage=LTMSQLiteStorage(
 						db_path="./db/long_term_memory_storage.db"
