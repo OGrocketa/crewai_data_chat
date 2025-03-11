@@ -14,16 +14,17 @@ import os
 load_dotenv()
 
 pdf_paths = [os.path.join("/Users/yaraslausedach/Code/crewai_data_chat/backend/knowledge",f ) for f in os.listdir("/Users/yaraslausedach/Code/crewai_data_chat/backend/knowledge")]
-print(pdf_paths)
 rag_tool = RagTool()
-rag_tool.add(source='/Users/yaraslausedach/Code/crewai_data_chat/backend/knowledge/ca7-pipe.pdf')
-rag_tool.add(source='/Users/yaraslausedach/Code/crewai_data_chat/backend/knowledge/ca2-data.pdf' )
+for path in pdf_paths:
+	rag_tool.add(source=path)
+
 @CrewBase
 class Testcrew():
 	"""Testcrew crew"""
 
 	agents_config = 'config/agents.yaml'
 	tasks_config = 'config/tasks.yaml'
+	
 
 	@agent
 	def data_extractor(self) -> Agent:
@@ -45,12 +46,14 @@ class Testcrew():
 	def research_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['retrieve_data'],
+			max_iter= 5,
 		)
 
 	@task
 	def reporting_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['summarize_data'],
+			max_iter=5,
 		)
 	
 	@crew
@@ -73,4 +76,4 @@ class Testcrew():
 
 		)
 
-result = Testcrew().crew().kickoff(inputs={'input':'What is RAW?'})
+result = Testcrew().crew().kickoff(inputs={'input':'Summarize'})
