@@ -1,12 +1,3 @@
-search_history:
-  description: >
-
-    Retrieve the history from the knowledge which is relevant to the user's question: {query}
-  expected_output: >
-    Possible answer to the users question, if no relevant data in history just return no history
-  agent: data_extractor
-
-
 retrieve_data:
   description: >
     If no history,

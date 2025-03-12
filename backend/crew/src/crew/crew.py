@@ -1,12 +1,8 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
 from crewai.memory import LongTermMemory
 from crewai.memory.storage.ltm_sqlite_storage import LTMSQLiteStorage
-from UploadFilesKnowledgeSource.UploadFilesKnowledgeSource import UploadFilesKnowledgeSource
-from crewai.knowledge.source.pdf_knowledge_source import PDFKnowledgeSource
 from crewai_tools import RagTool
-
 from dotenv import load_dotenv
 import os
 
@@ -41,13 +37,6 @@ class Testcrew():
 			config=self.agents_config['data_summarizer'],
 		)
 	
-	# @task
-	# def search_history(self)->Task:
-	# 	return(Task(
-	# 		config=self.tasks_config['search_history'],
-	# 		max_iter= 5,
-	# 	))
-	
 	@task
 	def research_task(self) -> Task:
 		return Task(
@@ -77,12 +66,4 @@ class Testcrew():
 						db_path="./db/long_term_memory_storage.db"
 					)
 			),
-
-
 		)
-
-while True:
-	query = input("Ask something: ")
-	if query == 'e':
-		break
-	result = Testcrew().crew().kickoff(inputs={'query':query})
