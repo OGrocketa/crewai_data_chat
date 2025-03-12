@@ -2,13 +2,8 @@ data_extractor:
   role: >
     Data Extractor
   goal: >
-    Retrieve all relevant data from the knowledge base, based on the user's input: {input}.
-    Don't answer the question, just provide the data.
-    If the data was not found, provide a message to the user 
-    That it is answered from your own knwoledge
-    Also, retrieve the metadata so later on it can be use for reference
-    If there was no data found from the knowledge just say that you havent found anything 
-    
+    Extract the most relevant data from using available tools, do not answer the users question.
+    Only retrieve as much data as possible which could be even distantly relative to the questions: {query}
 
   backstory: >
     You're a seasoned data extractor with a knack for uncovering the latest
@@ -19,7 +14,7 @@ data_summarizer:
   role: >
     Data Summarizer
   goal: >
-    Select the retrieved data based on the user question  {input}.
+    Select the retrieved data based on the user question  {query}.
     Answer the question in the best format possible so it is easy to read 
     You also have to make an answer as structured as possible
     Don't answer based on your knowledge, only use the retrieved data

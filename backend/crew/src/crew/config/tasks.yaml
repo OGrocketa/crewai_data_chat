@@ -1,20 +1,30 @@
+search_history:
+  description: >
+
+    Retrieve the history from the knowledge which is relevant to the user's question: {query}
+  expected_output: >
+    Possible answer to the users question, if no relevant data in history just return no history
+  agent: data_extractor
+
+
 retrieve_data:
   description: >
-    Retrieve the data from the knowledge base based on the user's input:{input} 
+    If no history,
+    Retrieve the data from the knowledge base based on the user's input:{query}.
+    But if there is a history just return history conversation .
   expected_output: >
-    A list of all possible data which could be relevent to the user's input
+    A list of all possible data which could be relevant to the user's input
   agent: data_extractor
 
 summarize_data:
   description: >
-    Summarize the data extracted from the research task
-    You also have to filter out the data which is not relevant to the user's question,
-    users question:{input}.
-    If there was no data found or the provided data is not relevant to the user's question,
-    then return a message "No data found".
+    Serve the collected data in the best possible way and only serve data relevant to the users question: {query}
+    <important> If there was no data found or the provided data is not relevant to the user's question,
+    then return a message "No data found". </important>
      
   expected_output: >
-    A list of summarized data using bulletpoints
+    A list of summarized data using bluepoints
     formatted markdown without '```'
+    or "No data found" in case if there is no data
   agent: data_summarizer
 

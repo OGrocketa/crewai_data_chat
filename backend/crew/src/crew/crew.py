@@ -31,7 +31,6 @@ class Testcrew():
 		return Agent(
 			config=self.agents_config['data_extractor'],
 			max_iter = 5,
-			# knowledge_sources = [self.pdf_knowledge]
 			tools=[rag_tool]
 
 		)
@@ -41,6 +40,13 @@ class Testcrew():
 		return Agent(
 			config=self.agents_config['data_summarizer'],
 		)
+	
+	# @task
+	# def search_history(self)->Task:
+	# 	return(Task(
+	# 		config=self.tasks_config['search_history'],
+	# 		max_iter= 5,
+	# 	))
 	
 	@task
 	def research_task(self) -> Task:
@@ -65,8 +71,7 @@ class Testcrew():
 			tasks=self.tasks,
 			process=Process.sequential,
 			verbose=True,
-			memory=False,
-			# knowledge_sources = [self.pdf_knowledge],
+			memory=True,
 			long_term_memory = LongTermMemory(
 				storage=LTMSQLiteStorage(
 						db_path="./db/long_term_memory_storage.db"
@@ -76,4 +81,8 @@ class Testcrew():
 
 		)
 
-result = Testcrew().crew().kickoff(inputs={'input':'Summarize'})
+while True:
+	query = input("Ask something: ")
+	if query == 'e':
+		break
+	result = Testcrew().crew().kickoff(inputs={'query':query})
