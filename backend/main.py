@@ -7,7 +7,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -19,7 +19,7 @@ def load_crew():
 @app.get("/respond_to_message")
 async def respond_to_message(message: str, crew = Depends(load_crew)):
     try:
-        response = crew.kickoff({"user_question":message})
+        response = crew.kickoff({"query":message})
         return response
     except HTTPException as e:
         raise HTTPException(status_code=500, detail=f"Error processing message: {e}")

@@ -2,8 +2,9 @@ import React, {useRef, useEffect, useState} from 'react'
 import { ArrowRightIcon,FileIcon } from "@radix-ui/react-icons"
 import TextareaAutosize from 'react-textarea-autosize';
 import { ErrorNotification } from '../notifications/ErrorNotification'; 
+import sendMessage from '../api/sendMessage';
 
-export const ChatInput = () => {
+export const ChatInput = ({addMessage}) => {
     const fileInputRef = useRef(null);
     const textareaRef = useRef(null);
     const [filesUploaded, setFilesUploaded] = useState([]);
@@ -18,10 +19,18 @@ export const ChatInput = () => {
         fileInputRef.current.click();
     };
 
-    const HandleMessageSent = () =>{
-        if(filesUploaded.length == 0){
-            ErrorNotification("You need to upload a file")
-        }
+    const HandleMessageSent = async () =>{
+        const message = textareaRef.current.value;
+        addMessage({ message, timestamp: new Date().toLocaleTimeString(), isOutgoing: true });
+        textareaRef.current.value = '';
+        // if(filesUploaded.length == 0){
+        //     ErrorNotification("You need to upload a file")
+        // }
+        // else{
+            const response = await sendMessage(message);
+            addMessage({ message: response, timestamp: new Date().toLocaleTimeString(), isOutgoing: false });
+
+        // }
     };
 
     return (
