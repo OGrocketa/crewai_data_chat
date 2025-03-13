@@ -10,11 +10,11 @@ export const Message = ({ message, timestamp, isOutgoing = false }) => {
           <ReactMarkdown>{message}</ReactMarkdown>
         </div>
 
-          {timestamp && (
-            <div className="text-xs mt-1 text-right text-black">
-              {timestamp}
-            </div>
-          )}
+        {timestamp && (
+          <div className="text-xs mt-1 text-right text-black">
+            {timestamp}
+          </div>
+        )}
         </div>
       </div>
     </div>
