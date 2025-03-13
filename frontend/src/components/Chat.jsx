@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import { Message } from './Message'
 import { ChatInput } from './ChatInput';
 
+
 const Chat = () => {
     const messagesEndRef = useRef(null);
     const [messages, setMessages] = useState([
@@ -112,12 +113,12 @@ const Chat = () => {
            <div className="flex-1 overflow-y-auto w-full">
                 <div className="max-w-2xl mx-auto px-4 pt-4">
                     {messages.map((message, index) => (
-                        <Message 
-                            key={index} 
-                            message={message.message} 
-                            timestamp={message.timestamp} 
-                            isOutgoing={message.isOutgoing} 
-                        />
+                            <Message 
+                                key={index} 
+                                message={message.message} 
+                                timestamp={message.timestamp} 
+                                isOutgoing={message.isOutgoing} 
+                            />
                     ))}
                     <div ref={messagesEndRef} />
                 </div>

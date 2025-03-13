@@ -4,10 +4,12 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { ErrorNotification } from '../notifications/ErrorNotification'; 
 import sendMessage from '../api/sendMessage';
 
+
 export const ChatInput = ({addMessage}) => {
     const fileInputRef = useRef(null);
     const textareaRef = useRef(null);
     const [filesUploaded, setFilesUploaded] = useState([]);
+    const [canAskQuestions, setCanAskQuestions] = useState(false);
 
     useEffect(() => {
         if (textareaRef.current) {
@@ -19,18 +21,58 @@ export const ChatInput = ({addMessage}) => {
         fileInputRef.current.click();
     };
 
+    const handleFileChange = (e)=>{
+        const files = Array.from(e.target.files);
+        setFilesUploaded(files);
+    }
+
+    const UploadFiles = async (files) =>{
+        const formData = new FormData();
+        files.forEach((file)=>{
+            formData.append('files', file);
+        });
+        try{
+            const response = await fetch('http://127.0.0.1:8000/upload_file',{
+                method: 'POST',
+                body: formData,
+            });
+            if (!response.ok){
+                console.error(response.status);
+            }
+            const data = await response.json();
+            return data;
+        }catch (error){
+            console.error('Error uploading files:', error);
+        };
+    };
+
     const HandleMessageSent = async () =>{
         const message = textareaRef.current.value;
+        if (!message.trim()) return;
+
         addMessage({ message, timestamp: new Date().toLocaleTimeString(), isOutgoing: true });
         textareaRef.current.value = '';
-        // if(filesUploaded.length == 0){
-        //     ErrorNotification("You need to upload a file")
-        // }
-        // else{
-            const response = await sendMessage(message);
-            addMessage({ message: response, timestamp: new Date().toLocaleTimeString(), isOutgoing: false });
+        try{
+            if(filesUploaded.length >0){
+                setCanAskQuestions((prev) => true);
+                const uploadResponse = await UploadFiles(filesUploaded);
+                console.log('Uploaded files:', uploadResponse);
 
-        // }
+                setFilesUploaded([]); 
+                fileInputRef.current.value = '';
+            }
+        
+            if(canAskQuestions == false){
+                ErrorNotification("You need to upload a file")
+            }
+            else{
+                const response = await sendMessage(message);
+                addMessage({ message: response, timestamp: new Date().toLocaleTimeString(), isOutgoing: false });
+
+            }
+        }catch (error){
+            console.error(error);
+        };
     };
 
     return (
@@ -51,6 +93,7 @@ export const ChatInput = ({addMessage}) => {
                 ref={fileInputRef}
                 className="hidden"
                 id="file-upload"
+                onChange={handleFileChange}
             />
 
             <div className="ml-2">
