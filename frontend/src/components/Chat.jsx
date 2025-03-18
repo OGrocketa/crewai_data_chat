@@ -23,13 +23,7 @@ const Chat = ({chat_id}) => {
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
-
-    const addMessage = (newMessage) => {
-        setMessages(prevMessages => [...prevMessages, newMessage]);
-    };
-
     
-
     return (
         <div className="bg-[hsl(0,0%,20%)] h-full flex flex-col w-full">
            <div className="flex-1 overflow-y-auto w-full">
@@ -48,7 +42,7 @@ const Chat = ({chat_id}) => {
             
             <div className="w-full pb-4">
                 <div className="max-w-2xl mx-auto px-4">
-                    <ChatInput addMessage={addMessage} />
+                    <ChatInput chat_id={chat_id} />
                 </div>
             </div>
         </div>

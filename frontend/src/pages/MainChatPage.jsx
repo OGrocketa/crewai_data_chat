@@ -4,7 +4,6 @@ import SideBar from '../components/SideBar'
 import { GoSidebarCollapse } from "react-icons/go";
 import { RiChatNewLine } from "react-icons/ri";
 import getUserData from '../../firebase/getData/getUserData';
-import getChat from '../../firebase/getData/getChat';
 
 
 const MainChatPage = () => {

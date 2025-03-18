@@ -3,9 +3,12 @@ import { ArrowRightIcon,FileIcon } from "@radix-ui/react-icons"
 import TextareaAutosize from 'react-textarea-autosize';
 import { ErrorNotification } from '../notifications/ErrorNotification'; 
 import sendMessage from '../api/sendMessage';
+import { Timestamp } from "firebase/firestore";
+import addMessage from '../../firebase/updateData/addMessage';
 
 
-export const ChatInput = ({addMessage}) => {
+
+export const ChatInput = ({chat_id}) => {
     const fileInputRef = useRef(null);
     const textareaRef = useRef(null);
     const [filesUploaded, setFilesUploaded] = useState([]);
@@ -50,7 +53,7 @@ export const ChatInput = ({addMessage}) => {
         const message = textareaRef.current.value;
         if (!message.trim()) return;
 
-        addMessage({ message, timestamp: new Date().toLocaleTimeString(), isOutgoing: true });
+        addMessage(chat_id,{ message: message, timestamp: Timestamp.now(), type: 'HumanMessage' });
         textareaRef.current.value = '';
         try{
             if(filesUploaded.length >0){
@@ -66,7 +69,7 @@ export const ChatInput = ({addMessage}) => {
             }
             else{
                 const response = await sendMessage(message);
-                addMessage({ message: response, timestamp: new Date().toLocaleTimeString(), isOutgoing: false });
+                addMessage(chat_id, { message: response, timestamp: Timestamp.now(), type: 'AiMessage' });
 
             }
         }catch (error){
