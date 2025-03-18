@@ -1,16 +1,40 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Chat from '../components/Chat'   
 import SideBar from '../components/SideBar'
 import { GoSidebarCollapse } from "react-icons/go";
 import { RiChatNewLine } from "react-icons/ri";
+import getUserData from '../../firebase/getData/getUserData';
+import getChat from '../../firebase/getData/getChat';
 
 
 const MainChatPage = () => {
   const [sideBarVisible, setSidebarVisible] = useState(true)
+  const [userData, setUserData] = useState();
+  const [chatData, setChatData] = useState();
 
   const toggleSidebar = () =>{
     setSidebarVisible(!sideBarVisible);
   }
+
+  useEffect(()=>{
+    getUserData('mYvT3KjSqRUcfSxP4fN3').then((data) =>{
+      setUserData(data);
+    });
+
+  },[])
+  
+  useEffect(()=>{
+    console.log(userData);
+    if(userData){
+      getChat(userData.user_chats[0]).then((data)=>{
+        setChatData(data)
+      })
+    }
+  },[userData]);
+
+  useEffect(()=>{
+    console.log(chatData);
+  },[chatData]);
 
   return (
     <div className='w-full h-screen flex '>
