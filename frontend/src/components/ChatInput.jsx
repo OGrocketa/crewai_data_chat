@@ -56,7 +56,6 @@ export const ChatInput = ({addMessage}) => {
             if(filesUploaded.length >0){
                 setCanAskQuestions((prev) => true);
                 const uploadResponse = await UploadFiles(filesUploaded);
-                console.log('Uploaded files:', uploadResponse);
 
                 setFilesUploaded([]); 
                 fileInputRef.current.value = '';

@@ -10,7 +10,7 @@ import getChat from '../../firebase/getData/getChat';
 const MainChatPage = () => {
   const [sideBarVisible, setSidebarVisible] = useState(true)
   const [userData, setUserData] = useState();
-  const [chatData, setChatData] = useState();
+  const [chatId, setChatId] = useState('');
 
   const toggleSidebar = () =>{
     setSidebarVisible(!sideBarVisible);
@@ -24,17 +24,10 @@ const MainChatPage = () => {
   },[])
   
   useEffect(()=>{
-    console.log(userData);
     if(userData){
-      getChat(userData.user_chats[0]).then((data)=>{
-        setChatData(data)
-      })
+      setChatId(userData.user_chats[0]);
     }
   },[userData]);
-
-  useEffect(()=>{
-    console.log(chatData);
-  },[chatData]);
 
   return (
     <div className='w-full h-screen flex '>
@@ -56,7 +49,7 @@ const MainChatPage = () => {
               
             </div>
           )}
-          <Chat/> 
+          <Chat chat_id={chatId}/> 
       </div>
         
     </div>
