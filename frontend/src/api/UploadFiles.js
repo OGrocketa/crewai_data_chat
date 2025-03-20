@@ -1,5 +1,5 @@
 import dbFilesUploadedFlag from "../../firebase/updateData/filesUploaded";
-const UploadFiles = async (files) =>{
+const UploadFiles = async (files,chat_id) =>{
     const formData = new FormData();
     files.forEach((file)=>{
         formData.append('files', file);
@@ -13,7 +13,8 @@ const UploadFiles = async (files) =>{
             console.error(response.status);
         }
         const data = await response.json();
-        await  dbFilesUploadedFlag();
+        console.log(chat_id);
+        await  dbFilesUploadedFlag(chat_id);
         return data;
     }catch (error){
         console.error('Error uploading files:', error);

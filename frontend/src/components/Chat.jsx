@@ -28,7 +28,7 @@ const Chat = ({chat_id}) => {
         <div className="bg-[hsl(0,0%,20%)] h-full flex flex-col w-full">
            <div className="flex-1 overflow-y-auto w-full">
                 <div className="max-w-2xl mx-auto px-4 pt-4">
-                    {chat_data?.chat && chat_data.chat.map((message, index) => (
+                    {chat_data?.chat?.length > 0 && chat_data.chat.map((message, index) => (
                             <Message 
                                 key={index} 
                                 message={message.message} 

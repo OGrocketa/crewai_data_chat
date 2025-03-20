@@ -9,7 +9,7 @@ import getChat from '../../firebase/getData/getChat';
 import UploadFiles from '../api/UploadFiles';
 
 
-export const ChatInput = ({chat_id, messages, uploadedFiles,setChatData}) => {
+export const ChatInput = ({chat_id, uploadedFiles,setChatData}) => {
     const fileInputRef = useRef(null);
     const textareaRef = useRef(null);
     const [filesUploaded, setFilesUploaded] = useState([]);
@@ -37,16 +37,15 @@ export const ChatInput = ({chat_id, messages, uploadedFiles,setChatData}) => {
         try{
             if(filesUploaded.length >0 || uploadedFiles ){
                 if(filesUploaded.length){
-                    await UploadFiles(filesUploaded);
+                    await UploadFiles(filesUploaded,chat_id);
                     setFilesUploaded([]); 
                 }
-                else{
-                    addMessage(chat_id,{ message: message, timestamp: Timestamp.now(), type: 'HumanMessage' });
-                    getChat(chat_id).then((data) => setChatData(data));
-                    const response = await sendMessage(message);
-                    addMessage(chat_id, { message: response, timestamp: Timestamp.now(), type: 'AiMessage' });
-                    getChat(chat_id).then((data) => setChatData(data));
-                }
+                addMessage(chat_id,{ message: message, timestamp: Timestamp.now(), type: 'HumanMessage' });
+                getChat(chat_id).then((data) => setChatData(data));
+                const response = await sendMessage(message);
+                addMessage(chat_id, { message: response, timestamp: Timestamp.now(), type: 'AiMessage' });
+                getChat(chat_id).then((data) => setChatData(data));
+                
                 fileInputRef.current.value = '';
             }
             else{

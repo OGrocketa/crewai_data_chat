@@ -17,6 +17,7 @@ const MainChatPage = () => {
 
   useEffect(()=>{
     getUserData('mYvT3KjSqRUcfSxP4fN3').then((data) =>{
+      console.log(data);
       setUserData(data);
     });
 
@@ -24,7 +25,7 @@ const MainChatPage = () => {
   
   useEffect(()=>{
     if(userData){
-      setChatId(userData.user_chats[0]);
+      setChatId(userData.user_chats[1]);
     }
   },[userData]);
 
