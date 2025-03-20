@@ -13,7 +13,6 @@ const UploadFiles = async (files,chat_id) =>{
             console.error(response.status);
         }
         const data = await response.json();
-        console.log(chat_id);
         await  dbFilesUploadedFlag(chat_id);
         return data;
     }catch (error){

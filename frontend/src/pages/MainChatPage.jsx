@@ -6,7 +6,7 @@ import { RiChatNewLine } from "react-icons/ri";
 import getUserData from '../../firebase/getData/getUserData';
 
 
-const MainChatPage = () => {
+const MainChatPage = ({user_id}) => {
   const [sideBarVisible, setSidebarVisible] = useState(true)
   const [userData, setUserData] = useState();
   const [chatId, setChatId] = useState('');
@@ -16,8 +16,7 @@ const MainChatPage = () => {
   }
 
   useEffect(()=>{
-    getUserData('mYvT3KjSqRUcfSxP4fN3').then((data) =>{
-      console.log(data);
+    getUserData(user_id).then((data) =>{
       setUserData(data);
     });
 

@@ -9,7 +9,7 @@ function App() {
     <>
     <Routes>
       <Route path="/*" element={<Layout/>}>
-        <Route index element={<MainChatPage/>}/>
+        <Route index element={<MainChatPage user_id= {'mYvT3KjSqRUcfSxP4fN3'}/>}/>
       </Route>
     </Routes>
      
