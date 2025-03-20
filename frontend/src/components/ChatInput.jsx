@@ -9,7 +9,7 @@ import getChat from '../../firebase/getData/getChat';
 import UploadFiles from '../api/UploadFiles';
 
 
-export const ChatInput = ({chat_id, uploadedFiles,setChatData}) => {
+export const ChatInput = ({chat_id, uploadedFiles,setChatData,setLoading}) => {
     const fileInputRef = useRef(null);
     const textareaRef = useRef(null);
     const [filesUploaded, setFilesUploaded] = useState([]);
@@ -40,9 +40,11 @@ export const ChatInput = ({chat_id, uploadedFiles,setChatData}) => {
                     await UploadFiles(filesUploaded,chat_id);
                     setFilesUploaded([]); 
                 }
+                setLoading(true);
                 addMessage(chat_id,{ message: message, timestamp: Timestamp.now(), type: 'HumanMessage' });
                 getChat(chat_id).then((data) => setChatData(data));
                 const response = await sendMessage(message);
+                setLoading(false);
                 addMessage(chat_id, { message: response, timestamp: Timestamp.now(), type: 'AiMessage' });
                 getChat(chat_id).then((data) => setChatData(data));
                 

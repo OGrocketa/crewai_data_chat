@@ -2,11 +2,12 @@ import React, { useRef, useEffect, useState } from 'react'
 import { Message } from './Message'
 import { ChatInput } from './ChatInput';
 import getChat from '../../firebase/getData/getChat';
-
+import ClipLoader from "react-spinners/ClipLoader";
 
 const Chat = ({chat_id}) => {
     const messagesEndRef = useRef(null);
     const [chat_data, setChatData] = useState();
+    const [loading, setLoading] = useState(false);
 
     useEffect(()=>{
         if(chat_id){
@@ -36,13 +37,18 @@ const Chat = ({chat_id}) => {
                                 isOutgoing={message['type'] == 'HumanMessage' ? true : false} 
                             />
                     ))}
+                    {loading && 
+                    <div className="max-w-2xl mx-auto">
+                        <ClipLoader color={'#66BB6A'} speedMultiplier={0.9}/>
+                    </div>
+                    }
                     <div ref={messagesEndRef} />
                 </div>
             </div>
             
             <div className="w-full pb-4">
                 <div className="max-w-2xl mx-auto px-4">
-                    <ChatInput chat_id={chat_id} messages= {chat_data?.chat} uploadedFiles={chat_data?.filesUploaded} setChatData={setChatData}/>
+                    <ChatInput chat_id={chat_id} messages= {chat_data?.chat} uploadedFiles={chat_data?.filesUploaded} setChatData={setChatData} setLoading={setLoading}/>
                 </div>
             </div>
         </div>
