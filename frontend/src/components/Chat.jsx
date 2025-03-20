@@ -6,19 +6,19 @@ import getChat from '../../firebase/getData/getChat';
 
 const Chat = ({chat_id}) => {
     const messagesEndRef = useRef(null);
-    const [messages, setMessages] = useState([])
+    const [chat_data, setChatData] = useState();
 
     useEffect(()=>{
         if(chat_id){
             getChat(chat_id).then((data) => {
-                setMessages(data)});
+                setChatData(data)});
         }
     },[chat_id])
     
     
     useEffect(() => {
         scrollToBottom();
-    }, [messages]);
+    }, [chat_data?.chat]);
       
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -28,7 +28,7 @@ const Chat = ({chat_id}) => {
         <div className="bg-[hsl(0,0%,20%)] h-full flex flex-col w-full">
            <div className="flex-1 overflow-y-auto w-full">
                 <div className="max-w-2xl mx-auto px-4 pt-4">
-                    {messages && messages.map((message, index) => (
+                    {chat_data?.chat && chat_data.chat.map((message, index) => (
                             <Message 
                                 key={index} 
                                 message={message.message} 
@@ -42,7 +42,7 @@ const Chat = ({chat_id}) => {
             
             <div className="w-full pb-4">
                 <div className="max-w-2xl mx-auto px-4">
-                    <ChatInput chat_id={chat_id} />
+                    <ChatInput chat_id={chat_id} messages= {chat_data?.chat} uploadedFiles={chat_data?.filesUploaded} setChatData={setChatData}/>
                 </div>
             </div>
         </div>

@@ -14,7 +14,8 @@ async function getChat(chat_id){
 
     return getDoc(docRef).then((snapshot) =>{
         const chat_data = snapshot.data();
-        return chat_data.chat;
+        console.log(chat_data);
+        return chat_data;
     }).catch((err)=>{
         console.error(err);
         return null;

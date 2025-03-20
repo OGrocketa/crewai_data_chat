@@ -5,14 +5,14 @@ import { ErrorNotification } from '../notifications/ErrorNotification';
 import sendMessage from '../api/sendMessage';
 import { Timestamp } from "firebase/firestore";
 import addMessage from '../../firebase/updateData/addMessage';
+import getChat from '../../firebase/getData/getChat';
+import UploadFiles from '../api/UploadFiles';
 
 
-
-export const ChatInput = ({chat_id}) => {
+export const ChatInput = ({chat_id, messages, uploadedFiles,setChatData}) => {
     const fileInputRef = useRef(null);
     const textareaRef = useRef(null);
     const [filesUploaded, setFilesUploaded] = useState([]);
-    const [canAskQuestions, setCanAskQuestions] = useState(false);
 
     useEffect(() => {
         if (textareaRef.current) {
@@ -29,48 +29,28 @@ export const ChatInput = ({chat_id}) => {
         setFilesUploaded(files);
     }
 
-    const UploadFiles = async (files) =>{
-        const formData = new FormData();
-        files.forEach((file)=>{
-            formData.append('files', file);
-        });
-        try{
-            const response = await fetch('http://127.0.0.1:8000/upload_file',{
-                method: 'POST',
-                body: formData,
-            });
-            if (!response.ok){
-                console.error(response.status);
-            }
-            const data = await response.json();
-            return data;
-        }catch (error){
-            console.error('Error uploading files:', error);
-        };
-    };
-
     const HandleMessageSent = async () =>{
         const message = textareaRef.current.value;
         if (!message.trim()) return;
 
-        addMessage(chat_id,{ message: message, timestamp: Timestamp.now(), type: 'HumanMessage' });
         textareaRef.current.value = '';
         try{
-            if(filesUploaded.length >0){
-                setCanAskQuestions((prev) => true);
-                const uploadResponse = await UploadFiles(filesUploaded);
-
-                setFilesUploaded([]); 
+            if(filesUploaded.length >0 || uploadedFiles ){
+                if(filesUploaded.length){
+                    await UploadFiles(filesUploaded);
+                    setFilesUploaded([]); 
+                }
+                else{
+                    addMessage(chat_id,{ message: message, timestamp: Timestamp.now(), type: 'HumanMessage' });
+                    getChat(chat_id).then((data) => setChatData(data));
+                    const response = await sendMessage(message);
+                    addMessage(chat_id, { message: response, timestamp: Timestamp.now(), type: 'AiMessage' });
+                    getChat(chat_id).then((data) => setChatData(data));
+                }
                 fileInputRef.current.value = '';
             }
-        
-            if(canAskQuestions == false){
-                ErrorNotification("You need to upload a file")
-            }
             else{
-                const response = await sendMessage(message);
-                addMessage(chat_id, { message: response, timestamp: Timestamp.now(), type: 'AiMessage' });
-
+                ErrorNotification("You need to upload a file")
             }
         }catch (error){
             console.error(error);
@@ -86,6 +66,12 @@ export const ChatInput = ({chat_id}) => {
                     placeholder="Type a message..."
                     maxRows = "5"
                     minRows = "1"
+                    onKeyDown={(e)=>{
+                        if(e.key == 'Enter'){
+                            e.preventDefault();
+                            HandleMessageSent();
+                        }
+                    }}
                 />
             </div>
 

@@ -1,0 +1,23 @@
+import dbFilesUploadedFlag from "../../firebase/updateData/filesUploaded";
+const UploadFiles = async (files) =>{
+    const formData = new FormData();
+    files.forEach((file)=>{
+        formData.append('files', file);
+    });
+    try{
+        const response = await fetch('http://127.0.0.1:8000/upload_file',{
+            method: 'POST',
+            body: formData,
+        });
+        if (!response.ok){
+            console.error(response.status);
+        }
+        const data = await response.json();
+        await  dbFilesUploadedFlag();
+        return data;
+    }catch (error){
+        console.error('Error uploading files:', error);
+    };
+};
+
+export default UploadFiles;
