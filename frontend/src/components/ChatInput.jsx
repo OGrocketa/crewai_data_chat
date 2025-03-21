@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useState} from 'react'
+import React, {useRef, useEffect, useState, useContext} from 'react'
 import { ArrowRightIcon,FileIcon } from "@radix-ui/react-icons"
 import TextareaAutosize from 'react-textarea-autosize';
 import { ErrorNotification } from '../notifications/ErrorNotification'; 
@@ -7,12 +7,16 @@ import { Timestamp } from "firebase/firestore";
 import addMessage from '../../firebase/updateData/addMessage';
 import getChat from '../../firebase/getData/getChat';
 import UploadFiles from '../api/UploadFiles';
+import createChat from '../../firebase/createData/createChat';
+import { UserIdContext } from '../pages/MainChatPage';
 
 
 export const ChatInput = ({chat_id, uploadedFiles,setChatData,setLoading}) => {
     const fileInputRef = useRef(null);
     const textareaRef = useRef(null);
+    const user_id = useContext(UserIdContext);
     const [filesUploaded, setFilesUploaded] = useState([]);
+    const [chatId, setChatId] = useState(chat_id);
 
     useEffect(() => {
         if (textareaRef.current) {
@@ -35,18 +39,26 @@ export const ChatInput = ({chat_id, uploadedFiles,setChatData,setLoading}) => {
 
         textareaRef.current.value = '';
         try{
+            let currentChatId = chatId;
             if(filesUploaded.length >0 || uploadedFiles ){
+                if(!chatId){
+                    console.log(user_id);
+                    currentChatId = await createChat(user_id);
+                    setChatId(currentChatId);
+                }
+
                 if(filesUploaded.length){
-                    await UploadFiles(filesUploaded,chat_id);
+                    await UploadFiles(filesUploaded,currentChatId);
                     setFilesUploaded([]); 
                 }
+                
                 setLoading(true);
-                addMessage(chat_id,{ message: message, timestamp: Timestamp.now(), type: 'HumanMessage' });
-                getChat(chat_id).then((data) => setChatData(data));
+                addMessage(currentChatId,{ message: message, timestamp: Timestamp.now(), type: 'HumanMessage' });
+                getChat(currentChatId).then((data) => setChatData(data));
                 const response = await sendMessage(message);
                 setLoading(false);
-                addMessage(chat_id, { message: response, timestamp: Timestamp.now(), type: 'AiMessage' });
-                getChat(chat_id).then((data) => setChatData(data));
+                addMessage(currentChatId, { message: response, timestamp: Timestamp.now(), type: 'AiMessage' });
+                getChat(currentChatId).then((data) => setChatData(data));
                 
                 fileInputRef.current.value = '';
             }

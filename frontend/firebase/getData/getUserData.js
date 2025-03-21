@@ -4,7 +4,15 @@ import{
     getFirestore, doc, getDoc,
 }from 'firebase/firestore'
 
+/**
+ * Fetches user data from Firestore given a user ID.
+ * 
+ * @param {string} user_id - The unique ID of the user document in Firestore.
+ * @returns {Promise<Object|null>} A Promise that resolves with user data or null if an error occurs.
+ */
+
 function getUserData(user_id){
+    
     initializeApp(firebaseConfig);
 
     const db = getFirestore();

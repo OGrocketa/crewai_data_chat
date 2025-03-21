@@ -51,7 +51,7 @@ const Chat = ({chat_id}) => {
             
             <div className="w-full pb-4">
                 <div className="max-w-2xl mx-auto px-4">
-                    <ChatInput chat_id={chat_id} messages= {chat_data?.chat} uploadedFiles={chat_data?.filesUploaded} setChatData={setChatData} setLoading={setLoading}/>
+                    <ChatInput chat_id={chat_id} messages= {chat_data?.chat} uploadedFiles={chat_data?.filesUploaded} setChatData={setChatData} setLoading={setLoading} />
                 </div>
             </div>
         </div>
