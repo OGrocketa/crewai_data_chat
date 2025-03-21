@@ -10,7 +10,7 @@ import getUserChats from '../../firebase/getData/getUserChats';
 const MainChatPage = ({user_id}) => {
   const [sideBarVisible, setSidebarVisible] = useState(true)
   const [userData, setUserData] = useState();
-  const [chatId, setChatId] = useState('');
+  const [chatId, setChatId] = useState(null);
   const [userChats, setUserChats] = useState([]);
 
   const toggleSidebar = () =>{
@@ -30,7 +30,6 @@ const MainChatPage = ({user_id}) => {
   
   useEffect(()=>{
     if(userData){
-      setChatId(userData.user_chats[1]);
       getUserChats(userData.user_chats).then((data)=>
         setUserChats(data)
       );

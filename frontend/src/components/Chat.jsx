@@ -13,6 +13,9 @@ const Chat = ({chat_id}) => {
         if(chat_id){
             getChat(chat_id).then((data) => {
                 setChatData(data)});
+
+        }else{
+            setChatData();
         }
     },[chat_id])
     
