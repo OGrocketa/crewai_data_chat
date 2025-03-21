@@ -17,7 +17,7 @@ Below are the minimal steps to install and run both the backend (using Poetry) a
    poetry run python -m uvicorn main:app --reload
 
 ## Frontend Setup
-    ```bash
+1.  ```bash
     cd ../frontend
     npm install
     npm run dev
