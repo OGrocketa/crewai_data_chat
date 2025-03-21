@@ -1,10 +1,9 @@
 import React from 'react'
-import ChatCard from './ChatCard'
-import { messages } from '../messages'
+import ChatCardSidebar from './ChatCardSidebar'
 import { GoSidebarExpand } from "react-icons/go";
 import { RiChatNewLine } from "react-icons/ri";
 
-const SideBar = ({ onToggle }) => {
+const SideBar = ({ onToggle,chats,handleSelectChat }) => {
 
   return (
     <div className='w-full h-full bg-[hsl(0,0%,10%)] flex flex-col'>
@@ -20,8 +19,11 @@ const SideBar = ({ onToggle }) => {
       </div>
 
       <div className='overflow-y-auto w-full mx-auto'>
-        {messages.map((message,index) =>(
-          <ChatCard key={index} message={message.message}/>
+        {chats.map((messagesData,index) =>(
+          <div key={index} onClick={() =>handleSelectChat(messagesData.id)}>
+            <ChatCardSidebar message={messagesData.chat[0]?.message}/>
+          </div>
+          
         ))}
       </div>
 

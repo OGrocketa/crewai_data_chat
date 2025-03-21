@@ -83,6 +83,8 @@ export const ChatInput = ({chat_id, uploadedFiles,setChatData,setLoading}) => {
                 className="hidden"
                 id="file-upload"
                 onChange={handleFileChange}
+                multiple
+                accept="application/pdf"
             />
 
             <div className="ml-2">

@@ -4,16 +4,22 @@ import SideBar from '../components/SideBar'
 import { GoSidebarCollapse } from "react-icons/go";
 import { RiChatNewLine } from "react-icons/ri";
 import getUserData from '../../firebase/getData/getUserData';
+import getUserChats from '../../firebase/getData/getUserChats';
 
 
 const MainChatPage = ({user_id}) => {
   const [sideBarVisible, setSidebarVisible] = useState(true)
   const [userData, setUserData] = useState();
   const [chatId, setChatId] = useState('');
+  const [userChats, setUserChats] = useState([]);
 
   const toggleSidebar = () =>{
     setSidebarVisible(!sideBarVisible);
   }
+
+  const handleSelectChat = (id) => {
+    setChatId(id);
+  };
 
   useEffect(()=>{
     getUserData(user_id).then((data) =>{
@@ -25,6 +31,9 @@ const MainChatPage = ({user_id}) => {
   useEffect(()=>{
     if(userData){
       setChatId(userData.user_chats[1]);
+      getUserChats(userData.user_chats).then((data)=>
+        setUserChats(data)
+      );
     }
   },[userData]);
 
@@ -32,7 +41,7 @@ const MainChatPage = ({user_id}) => {
     <div className='w-full h-screen flex '>
       <div className={`h-full transition-all duration-300 ease-in-out ${sideBarVisible ? 'w-50' : 'w-0'}  overflow-hidden`}>
         <div className="w-50 h-full">
-              <SideBar onToggle={toggleSidebar}/>
+              <SideBar onToggle={toggleSidebar} chats={userChats} handleSelectChat={handleSelectChat}/>
         </div>
       </div>
        
