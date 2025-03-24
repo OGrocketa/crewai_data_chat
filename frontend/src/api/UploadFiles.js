@@ -5,7 +5,7 @@ const UploadFiles = async (files,chat_id) =>{
         formData.append('files', file);
     });
     try{
-        const response = await fetch('http://127.0.0.1:8000/upload_file',{
+        const response = await fetch(`http://127.0.0.1:8000/upload_file?chat_id=${chat_id}`,{
             method: 'POST',
             body: formData,
         });

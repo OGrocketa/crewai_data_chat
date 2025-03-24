@@ -9,11 +9,6 @@ import os
 
 load_dotenv()
 
-pdf_paths = [os.path.join("/Users/yaraslausedach/Code/crewai_data_chat/backend/knowledge",f ) for f in os.listdir("/Users/yaraslausedach/Code/crewai_data_chat/backend/knowledge")]
-rag_tool = RagTool()
-for path in pdf_paths:
-	rag_tool.add(source=path)
-
 @CrewBase
 class Testcrew():
 	"""Testcrew crew"""
@@ -27,7 +22,7 @@ class Testcrew():
 		return Agent(
 			config=self.agents_config['data_extractor'],
 			max_iter = 5,
-			tools=[rag_tool]
+			tools=[]
 
 		)
 

@@ -1,7 +1,18 @@
 from fastapi import FastAPI, Depends,HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from crew.src.crew.crew import Testcrew
+from crewai_tools import RagTool
 import uvicorn, os
+import boto3
+from pydantic import BaseModel
+from typing import List
+
+class MessageRequest(BaseModel):
+    message: str
+    files_urls: List[str]
+
+
+BUCKET_NAME = "crewai-chatbot"
 
 app = FastAPI()
 
@@ -16,33 +27,49 @@ app.add_middleware(
 def load_crew():
     return Testcrew().crew()
 
-@app.get("/respond_to_message")
-async def respond_to_message(message: str, crew = Depends(load_crew)):
+@app.post("/respond_to_message")
+async def respond_to_message(request: MessageRequest, crew = Depends(load_crew), ):
+    rag_tool = RagTool()
+    if request.files_urls:
+        for file in request.files_urls:
+            rag_tool.add(source=file)
+    
+    data_extractor_agent = None
+
+    for agent in crew.agents:
+        if hasattr(agent,"role") and agent.role.strip().lower() =="data extractor":
+            data_extractor_agent = agent
+            break
+    
+    if data_extractor_agent is None:
+        raise HTTPException(status_code=404, detail="Data extractor agent not found")
+
+    data_extractor_agent.tools.append(rag_tool)
+
     try:
-        response = crew.kickoff({"query":message})
+        response = crew.kickoff({"query":request.message})
         return response
     except HTTPException as e:
         raise HTTPException(status_code=500, detail=f"Error processing message: {e}")
 
 
 @app.post("/upload_file")
-async def upload_files_create_chromadb(files: list[UploadFile]=File(...)):
-    UPLOAD_DIR = "./knowledge"
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
+async def upload_files_create_chromadb(chat_id:str, files: list[UploadFile]=File(...)):
     
-    filenames = []
+    s3_client = boto3.client('s3')
+    
+    uploaded_files = []
     for file in files:
+        s3_key = f"{chat_id}/{file.filename}"
+
         try:
-            knowledge_dir = os.path.join(UPLOAD_DIR, file.filename)
-            contents = await file.read()
-            with open(knowledge_dir, 'wb') as f :
-                f.write(contents)
-            filenames.append(file.filename)
-
+            file_url = f"https://crewai-chatbot.s3.eu-north-1.amazonaws.com/{s3_key}"
+            response = s3_client.upload_fileobj(file.file, BUCKET_NAME, s3_key)
+            uploaded_files.append(file_url)
         except Exception as e:
-            raise HTTPException(status_code=500, detail="File upload failed")
+            print('An error occurred when trying to upload:',e)
+            raise HTTPException(status_code=406, detail=f"Error uploading a file: {e}")
 
-        finally:
-            await file.close()
 
-    return {"uploaded_files": filenames}
+    return uploaded_files
+

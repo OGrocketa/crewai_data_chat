@@ -17,6 +17,7 @@ export const ChatInput = ({chat_id, uploadedFiles,setChatData,setLoading}) => {
     const user_id = useContext(UserIdContext);
     const [filesUploaded, setFilesUploaded] = useState([]);
     const [chatId, setChatId] = useState(chat_id);
+    const [fileLinks, setFileLinks] = useState([])
 
     useEffect(() => {
         if (textareaRef.current) {
@@ -39,6 +40,7 @@ export const ChatInput = ({chat_id, uploadedFiles,setChatData,setLoading}) => {
 
         textareaRef.current.value = '';
         try{
+            let uploaded_links = [];
             let currentChatId = chatId;
             if(filesUploaded.length >0 || uploadedFiles ){
                 if(!chatId){
@@ -48,14 +50,17 @@ export const ChatInput = ({chat_id, uploadedFiles,setChatData,setLoading}) => {
                 }
 
                 if(filesUploaded.length){
-                    await UploadFiles(filesUploaded,currentChatId);
+                    const response = await UploadFiles(filesUploaded,currentChatId);
+                    uploaded_links = response;
+                    console.log(uploaded_links);
+                    setFileLinks(response)
                     setFilesUploaded([]); 
                 }
                 
                 setLoading(true);
                 addMessage(currentChatId,{ message: message, timestamp: Timestamp.now(), type: 'HumanMessage' });
                 getChat(currentChatId).then((data) => setChatData(data));
-                const response = await sendMessage(message);
+                const response = await sendMessage(message, fileLinks.length > 0 ? fileLinks : uploaded_links);
                 setLoading(false);
                 addMessage(currentChatId, { message: response, timestamp: Timestamp.now(), type: 'AiMessage' });
                 getChat(currentChatId).then((data) => setChatData(data));
