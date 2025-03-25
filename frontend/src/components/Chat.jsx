@@ -3,11 +3,14 @@ import { Message } from './Message'
 import { ChatInput } from './ChatInput';
 import getChat from '../../firebase/getData/getChat';
 import ClipLoader from "react-spinners/ClipLoader";
+import { FaFileAlt } from "react-icons/fa";
 
 const Chat = ({chat_id, handleChatId}) => {
     const messagesEndRef = useRef(null);
     const [chat_data, setChatData] = useState();
     const [loading, setLoading] = useState(false);
+    const [filesUploading, setFilesUploading] = useState(false);
+    const [uploadedFilesNames, setUploadedFilesNames] = useState([]);
 
     useEffect(()=>{
         if(chat_id){
@@ -41,8 +44,9 @@ const Chat = ({chat_id, handleChatId}) => {
                             />
                     ))}
                     {loading && 
-                    <div className="max-w-2xl mx-auto">
+                    <div className="max-w-2xl mx-auto flex flex-row text-center text-white">
                         <ClipLoader color={'#66BB6A'} speedMultiplier={0.9}/>
+                        <p>{filesUploading ?"Uploading Files ..." : "Thinking on the answer ..."}</p>
                     </div>
                     }
                     <div ref={messagesEndRef} />
@@ -51,7 +55,29 @@ const Chat = ({chat_id, handleChatId}) => {
             
             <div className="w-full pb-4">
                 <div className="max-w-2xl mx-auto px-4">
-                    <ChatInput chat_id={chat_id} messages= {chat_data?.chat} uploadedFiles={chat_data?.filesUploaded} setChatData={setChatData} setLoading={setLoading} awsFilesLinks={chat_data?.filesLinks} handleChatId={handleChatId}/>
+                    <div className='flex flex-row text-gray-300 text-sm mb-2'>
+                        {
+                            uploadedFilesNames.map((fileName, index) => (
+                                <div className='flex flex-row mx-2'>
+                                    <FaFileAlt key={index}/>
+                                    <p key={index}>{fileName}</p>
+                                </div>
+                                
+                            ))
+                        }
+                    </div>
+
+                    <ChatInput
+                        chat_id={chat_id}
+                        messages={chat_data?.chat}
+                        uploadedFiles={chat_data?.filesUploaded}
+                        setChatData={setChatData}
+                        setLoading={setLoading}
+                        awsFilesLinks={chat_data?.filesLinks}
+                        handleChatId={handleChatId}
+                        setFilesUploading={setFilesUploading}
+                        setUploadedFilesNames= {setUploadedFilesNames}
+                    />
                 </div>
             </div>
         </div>

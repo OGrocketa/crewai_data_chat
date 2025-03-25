@@ -11,8 +11,8 @@ import createChat from '../../firebase/createData/createChat';
 import { UserIdContext } from '../pages/MainChatPage';
 
 
-export const ChatInput = ({ chat_id, uploadedFiles, setChatData, setLoading, awsFilesLinks,handleChatId }) => {
-    // ...other refs and states
+
+export const ChatInput = ({ chat_id, uploadedFiles, setChatData, setLoading, awsFilesLinks,handleChatId,setFilesUploading,setUploadedFilesNames }) => {
     const fileInputRef = useRef(null);
     const textareaRef = useRef(null);
     const user_id = useContext(UserIdContext);
@@ -32,6 +32,8 @@ export const ChatInput = ({ chat_id, uploadedFiles, setChatData, setLoading, aws
     const handleFileChange = (e) => {
         const files = Array.from(e.target.files);
         setFilesUploaded(files);
+        setUploadedFilesNames(files.map((file)=>file.name));
+
     };
 
     const HandleMessageSent = async () => {
@@ -44,20 +46,23 @@ export const ChatInput = ({ chat_id, uploadedFiles, setChatData, setLoading, aws
             if (filesUploaded.length > 0 || uploadedFiles) {
                 if (!chat_id) {
                     currentChatId = await createChat(user_id);
-                    // Inform parent about the new chat ID:
                     handleChatId(currentChatId);
                 }
 
+                addMessage(currentChatId, { message: message, timestamp: Timestamp.now(), type: 'HumanMessage' });
+                getChat(currentChatId).then((data) => setChatData(data));
+
                 if (filesUploaded.length) {
+                    setFilesUploading(true);
                     const response = await UploadFiles(filesUploaded, currentChatId);
                     filesLinks = response;
                     setFilesUploaded([]);
+                    setFilesUploading(false);
                 }
-
                 setLoading(true);
-                addMessage(currentChatId, { message: message, timestamp: Timestamp.now(), type: 'HumanMessage' });
-                getChat(currentChatId).then((data) => setChatData(data));
+                
                 const response = await sendMessage(message, (filesLinks?.length > 0) ? filesLinks : awsFilesLinks);
+                setUploadedFilesNames([]);
                 setLoading(false);
                 addMessage(currentChatId, { message: response, timestamp: Timestamp.now(), type: 'AiMessage' });
                 getChat(currentChatId).then((data) => setChatData(data));
