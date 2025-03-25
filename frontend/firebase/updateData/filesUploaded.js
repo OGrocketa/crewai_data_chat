@@ -10,7 +10,7 @@ async function dbFilesUploadedFlag(chat_id, filesLinks){
     const db = getFirestore();
 
     const chatDocRef = doc(db, 'chats', chat_id);
-    updateDoc(chatDocRef,{filesUploaded : true, filesLinks: filesLinks},{merge:true});
+    updateDoc(chatDocRef,{filesUploaded : true, filesLinks: arrayUnion(...filesLinks)},{merge:true});
     
 }
 

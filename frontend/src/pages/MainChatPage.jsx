@@ -58,7 +58,7 @@ const MainChatPage = ({user_id}) => {
                 
               </div>
             )}
-              <Chat chat_id={chatId} /> 
+              <Chat chat_id={chatId} handleChatId={setChatId}/> 
         </div>
         
       </div>
