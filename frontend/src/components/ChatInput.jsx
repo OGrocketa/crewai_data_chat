@@ -44,7 +44,6 @@ export const ChatInput = ({chat_id, uploadedFiles,setChatData,setLoading}) => {
             let currentChatId = chatId;
             if(filesUploaded.length >0 || uploadedFiles ){
                 if(!chatId){
-                    console.log(user_id);
                     currentChatId = await createChat(user_id);
                     setChatId(currentChatId);
                 }
@@ -52,7 +51,6 @@ export const ChatInput = ({chat_id, uploadedFiles,setChatData,setLoading}) => {
                 if(filesUploaded.length){
                     const response = await UploadFiles(filesUploaded,currentChatId);
                     uploaded_links = response;
-                    console.log(uploaded_links);
                     setFileLinks(response)
                     setFilesUploaded([]); 
                 }

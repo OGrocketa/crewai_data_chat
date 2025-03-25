@@ -5,12 +5,12 @@ import {
     doc,getFirestore,updateDoc
 } from 'firebase/firestore'
 
-async function dbFilesUploadedFlag(chat_id){
+async function dbFilesUploadedFlag(chat_id, filesLinks){
     initializeApp(firebaseConfig);
     const db = getFirestore();
 
     const chatDocRef = doc(db, 'chats', chat_id);
-    updateDoc(chatDocRef,{filesUploaded : true},{merge:true});
+    updateDoc(chatDocRef,{filesUploaded : true, filesLinks: filesLinks},{merge:true});
     
 }
 
